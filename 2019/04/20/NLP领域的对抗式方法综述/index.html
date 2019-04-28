@@ -17,32 +17,32 @@
 <h2 id="论文1对抗式方法解决多标准下的中文分词问题"><a class="markdownIt-Anchor" href="#论文1对抗式方法解决多标准下的中文分词问题"></a> 论文1：对抗式方法解决多标准下的中文分词问题</h2>
 <h3 id="本文拟解决的问题"><a class="markdownIt-Anchor" href="#本文拟解决的问题"></a> 本文拟解决的问题</h3>
 <p>在中文分词领域中，常常存在许多不同的分词标准（criteria），如下图所示：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/f27e11e6-5f33-11e9-888b-0242ac110002.jpg" alt="不同的分词标准"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c2e25178f.png" alt="不同的分词标准"><br>
 可以看到在上面两个语料集中，使用了不同的标准对同一句话“姚明进入总决赛”进行分词，得到了不同的结果。</p>
 <p>此前的大部分方法都是针对单一分词标准进行的分词模型研究，本文提出的模型旨在将不同标准的语料库一起利用起来，进行多任务联合训练，通过对公共特征的学习，帮助提升各个子任务的分词性能。</p>
 <h3 id="本文提出的模型"><a class="markdownIt-Anchor" href="#本文提出的模型"></a> 本文提出的模型</h3>
 <p>本文提出的多任务（多分词标准）联合训练模型如下图所示：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/49fc486a-5f35-11e9-888b-0242ac110002.jpg" alt="本文提出的模型（三种变体）"></p>
+<img src="https://i.loli.net/2019/04/28/5cc5c3030c974.png" alt="本文提出的模型（三种变体）"></p>
 <p>其中：黄色的方框是共享的Bi-LSTM层，灰色的方框是每个任务私有的Bi-LSTM层。黄色的圆圈是多任务共享的word-embedding层。<br>
 这三个模型（Model-I ~ Model-III）的差别就是共享Bi-LSTM层数据的流向不同，如图中的红色箭头所示。虽然图中只放了两个Task，但实际上可以有多个Task，它们分别有各自的Bi-LSTM层和CRF层，并且使用共享Bi-LSTM层提供的信息。</p>
 <p>多任务联合训练模型（需要最大化）的目标函数如下：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/b8bed532-5f36-11e9-95f5-0242ac110002.jpg" alt="task loss"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c32d8c4ef.jpg" alt="task loss"><br>
 这个目标函数是面向任务的，论文中将其称为<strong>task loss</strong>。</p>
 <hr>
 <p>在上述多任务联合训练模型的基础上，作者受到一些对抗式模型（共三篇，见引文）的启发，加入了对抗判别器如下：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/f7504ede-5f36-11e9-888b-0242ac110002.jpg" alt="加入了对抗判别器后的模型"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c36d02bfb.jpg" alt="加入了对抗判别器后的模型"><br>
 其结构为：将输入句子通过共享Bi-LSTM层，将每个时间步的hidden state取平均，然后过一个线性映射，再过一个softmax，最后向量中的每个值就表示对应的各个任务的分数。</p>
 <p>对抗判别器的目标是：<strong>正确区分出给定sentence属于哪一个任务</strong>。因此其目标函数如下：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/dac03f6e-5f3a-11e9-888b-0242ac110002.jpg" alt="判别器的adversarial loss"></p>
+<img src="https://i.loli.net/2019/04/28/5cc5c389872b3.jpg" alt="判别器的adversarial loss"></p>
 <p>而shared Bi-LSTM的目标是和判别器对抗的，即：<strong>不让判别器区分出给定sentence属于哪一个任务</strong>，因此其目标函数如下：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/255e45f2-5f3b-11e9-888b-0242ac110002.jpg" alt="shared Bi-LSTM的adversarial loss"></p>
+<img src="https://i.loli.net/2019/04/28/5cc5c3bb215ac.jpg" alt="shared Bi-LSTM的adversarial loss"></p>
 <p>以上两者是<strong>判别器和shared Bi-LSTM相互对抗</strong>的loss，作者称其为<strong>adversarial loss</strong>。</p>
 <p>最终任务的损失函数如下：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/7afb1954-5f3b-11e9-888b-0242ac110002.jpg" alt="total loss"></p>
+<img src="https://i.loli.net/2019/04/28/5cc5c3d3dcdb2.jpg" alt="total loss"></p>
 <p>训练过程是交替进行的，如下：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/8bb7bb76-5f3b-11e9-95f5-0242ac110002.jpg" alt="交替训练的算法"></p>
+<img src="https://i.loli.net/2019/04/28/5cc5c41a2e54d.jpg" alt="交替训练的算法"></p>
 <h3 id="实验结果"><a class="markdownIt-Anchor" href="#实验结果"></a> 实验结果</h3>
-<p><img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/db08a172-5f3b-11e9-888b-0242ac110002.jpg" alt="实验结果"></p>
+<p><img src="https://i.loli.net/2019/04/28/5cc5c4625d44d.jpg" alt="实验结果"></p>
 <h3 id="相关引文"><a class="markdownIt-Anchor" href="#相关引文"></a> 相关引文</h3>
 <p>论文中引用的三篇做对抗式的论文：</p>
 <ul>
@@ -90,37 +90,37 @@
 <h3 id="本文提出的模型-2"><a class="markdownIt-Anchor" href="#本文提出的模型-2"></a> 本文提出的模型</h3>
 <p>本文提出了两种不同的模型，这两种模型的不同只是在于Decoder端，其他的部分（包括对抗判别器）都是相同的。<br>
 模型一（图左）对每个style单独训练一个decoder；而模型二（图右）只训练一个共同的decoder，通过lookup的方式获取不同style的style embedding（类似word embedding），并将其传入共同的这一个decoder。</p>
-<p><img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/687e5642-5f40-11e9-888b-0242ac110002.jpg" alt="本文提出的两种模型"></p>
+<p><img src="https://i.loli.net/2019/04/28/5cc5c48feea55.jpg" alt="本文提出的两种模型"></p>
 <p>这两个模型都采用了传统的做seq2seq的Encoder-Decoder结构作为主体。模型假设：Encoder只提取出<strong>文本的内容表示</strong>，而不会提取文本的风格信息；而Decoder基于Encoder提取出来的，本文的内容表示（<code>Content c</code>）<strong>去重构原始文本</strong>。由于之前保证了Encoder只会提取出文本的内容信息（而没有风格信息），那么Decoder相当于就能学习到不同style文本共有的style信息，<strong>在此style信息的基础上，对内容信息进行加工，从而重构出原始句子</strong>。</p>
 <p>因此论文的<strong>task loss</strong>是要让Decoder的输出去恢复原始句子：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/19/22f313aa-627f-11e9-af5e-0242ac110002.jpg" alt="seq2seq模型的loss"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c4a4862b5.jpg" alt="seq2seq模型的loss"><br>
 其中<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">x_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>和<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>y</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">y_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>是原始序列和目标序列，它们是相同的（i.e. <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">x_i == y_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>）。论文称之为seq2seq的自编解码网络（<strong>auto-encoder seq2seq model</strong>）。</p>
 <p>但是光有上面的Encoder-Decoder是无法保证Encoder单单提取出文本的内容信息的。因此这里就采用了对抗式的方法：引入了对抗判别器，接受Encoder编码后的向量，过一个多层感知器和softmax，目标是判别文本的风格（style）。</p>
 <p>类似于论文1，这里的loss分成两个部分：<strong>task loss</strong>和<strong>adversarial loss</strong>，其中adversarial loss是成对出现的（分别属于对抗的两个主体）：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/9ecb41b4-5f41-11e9-888b-0242ac110002.jpg" alt="task loss"><br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/b3dc9292-5f41-11e9-888b-0242ac110002.jpg" alt="判别器的adversarial loss"><br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/c04b0f40-5f41-11e9-95f5-0242ac110002.jpg" alt="编码器的adversarial loss"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c4f3836d4.jpg" alt="task loss"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c50aaa928.jpg" alt="判别器的adversarial loss"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c51d715ad.jpg" alt="编码器的adversarial loss"><br>
 基本和论文1的形式是相同的（只是论文1中是最大化目标函数，这里是最小化loss），因此这里不再展开讲。</p>
 <p>最后针对两个模型的总的total loss如下：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/e257bba6-5f41-11e9-888b-0242ac110002.jpg" alt="第一种模型的total loss"><br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/15/08d73dc4-5f42-11e9-888b-0242ac110002.jpg" alt="第二种模型的total loss"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c531c6ed3.jpg" alt="第一种模型的total loss"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c548e0005.jpg" alt="第二种模型的total loss"><br>
 分别属于两个模型。</p>
 <h3 id="本文提出的风格迁移的评价方法"><a class="markdownIt-Anchor" href="#本文提出的风格迁移的评价方法"></a> 本文提出的风格迁移的评价方法</h3>
 <h4 id="transfer-strength"><a class="markdownIt-Anchor" href="#transfer-strength"></a> Transfer Strength</h4>
 <p>作者用100,000+数据训练了一个二分类的判别器（可以在<a href="https://github.com/fchollet/keras/blob/master/examples/imdblstm.py" target="_blank" rel="noopener">这里</a>获取到），去判别文本的风格（news OR paper）。该评价指标的计算方式为：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>N</mi><mrow><mi>r</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub><mi mathvariant="normal">/</mi><msub><mi>N</mi><mrow><mi>t</mi><mi>o</mi><mi>t</mi><mi>a</mi><mi>l</mi></mrow></msub></mrow><annotation encoding="application/x-tex">N_{right} / N_{total}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">g</span><span class="mord mathdefault mtight">h</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mord">/</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，其中<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>N</mi><mrow><mi>r</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">N_{right}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">g</span><span class="mord mathdefault mtight">h</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>是正确迁移到目标风格的样本数量，而<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>N</mi><mrow><mi>t</mi><mi>o</mi><mi>t</mi><mi>a</mi><mi>l</mi></mrow></msub></mrow><annotation encoding="application/x-tex">N_{total}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>是测试样本总数。</p>
 <h4 id="content-preservation"><a class="markdownIt-Anchor" href="#content-preservation"></a> Content Preservation</h4>
 <p>对于内容保留度，作者采用的是原句和迁移后句子的向量余弦距离。句子的向量被定义为一个三维向量，其每一项分别为对所有的word的embedding做max、mean、min pooling的结果，如下所示：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/19/8a6b0a76-6282-11e9-b495-0242ac110002.jpg" alt="内容保留度的计算方法"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c560f16fa.jpg" alt="内容保留度的计算方法"><br>
 而word embedding采用的是stanford发布的Glove，使用了其中100维的word embedding。</p>
 <h3 id="实验结果-2"><a class="markdownIt-Anchor" href="#实验结果-2"></a> 实验结果</h3>
 <h4 id="数据集"><a class="markdownIt-Anchor" href="#数据集"></a> 数据集</h4>
 <p>采用了两个数据集，分别是：news-paper title和positive-negative review。两者都是非平行（即没有news2paper一一对应关系）的数据。</p>
 <h4 id="实验结果-3"><a class="markdownIt-Anchor" href="#实验结果-3"></a> 实验结果</h4>
 <p>实验采用了普通的auto-encoder seq2seq model作为对照，在本文提出的两个指标上进行了文本迁移及其评价，结果如下图：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/19/53a4f4c8-6289-11e9-b495-0242ac110002.jpg" alt="实验结果图示"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c586a423e.jpg" alt="实验结果图示"><br>
 其中不同的结点代表了作者采用的不同的超参数设定。</p>
 <p>下图为一些迁移的样本：<br>
-<img src="https://media-cdn.jiuzhang.com/markdown/images/4/19/8be12f1e-6289-11e9-b495-0242ac110002.jpg" alt="迁移样本示例"><br>
+<img src="https://i.loli.net/2019/04/28/5cc5c5a1a0a7c.jpg" alt="迁移样本示例"><br>
 可以看到在positive-negative迁移中的效果还是不错的。</p>
 <h2 id="论文3对抗式方法解决针对序列任务的主动学习算法"><a class="markdownIt-Anchor" href="#论文3对抗式方法解决针对序列任务的主动学习算法"></a> 论文3：对抗式方法解决针对序列任务的主动学习算法</h2>
 <p>这篇论文使用对抗要解决的问题就和上两篇论文（多任务、多领域等）有些不太一样。这篇论文使用对抗的目的是解决主动学习中的query sample selection问题，即如何从未标注的数据集中选取下一批要标注的数据。</p>

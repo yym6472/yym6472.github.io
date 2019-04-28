@@ -125,7 +125,7 @@
 可以看到在positive-negative迁移中的效果还是不错的。</p>
 <h2 id="论文3对抗式方法解决针对序列任务的主动学习算法"><a class="markdownIt-Anchor" href="#论文3对抗式方法解决针对序列任务的主动学习算法"></a> 论文3：对抗式方法解决针对序列任务的主动学习算法</h2>
 <p>这篇论文使用对抗要解决的问题就和上两篇论文（多任务、多领域等）有些不太一样。这篇论文使用对抗的目的是解决主动学习中的query sample selection问题，即如何从未标注的数据集中选取下一批要标注的数据。</p>
-<p>具体内容详见<a href="https://github.com/Helicqin/hangtiansuo/wiki/%E3%80%8AAdversarial-Active-Learning-for-Sequence-Labeling-and-Generation%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0" target="_blank" rel="noopener">之前的笔记</a>。这里就不再重复。</p>
+<p>具体内容详见<a href="https://yym6472.github.io/2019/04/08/%E3%80%8AAdversarial-Active-Learning-for-Sequence-Labeling-and-Generation%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/#%E4%B8%BB%E5%8A%A8%E5%AD%A6%E4%B9%A0active-learning%E4%BB%8B%E7%BB%8D">之前的笔记</a>。这里就不再重复。</p>
 <h2 id="总结和思考"><a class="markdownIt-Anchor" href="#总结和思考"></a> 总结和思考</h2>
 <p>Q：这种用对抗的方式做Domain Separation相比非对抗式的训练是否引入了新的信息呢？</p>
 <p>A：我觉得是引入了的，就是<strong>各个样本取自哪个领域/任务</strong>的额外信息。在单纯采用多任务联合训练的模型，而不使用对抗的时候，模型是得不到<code>每个样本取自什么领域/任务</code>这一维度信息的，虽然看上去貌似不同领域/任务的样本被喂入不同的编码器，但模型是不知道它们之间的含义的。而当采用了对抗做Domain Separation后，判别器的损失函数中就包含这一维度的信息了。</p>

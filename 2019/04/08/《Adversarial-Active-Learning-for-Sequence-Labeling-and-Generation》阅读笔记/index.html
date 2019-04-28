@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang="en"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="《Adversarial Active Learning for Sequence Labeling and Generation》阅读笔记"><meta name="keywords" content="NLP,Active Learning,Adversarial-based"><meta name="author" content="yym6472"><meta name="copyright" content="yym6472"><title>《Adversarial Active Learning for Sequence Labeling and Generation》阅读笔记 | yym6472's Blog</title><link rel="shortcut icon" href="/favicon-256.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"G2KYQO0W55","apiKey":"f8377236a1dbdcb6cfe6bcce269cbc82","indexName":"blog","hits":{"per_page":10},"languages":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}.","hits_stats":"${hits} results found in ${time} ms"}},
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#adversarial-active-learning-for-sequence-labeling-and-generation阅读笔记"><span class="toc-number">1.</span> <span class="toc-text"> 《Adversarial Active Learning for Sequence Labeling and Generation》阅读笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主动学习active-learning介绍"><span class="toc-number">1.1.</span> <span class="toc-text"> 主动学习（active learning）介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#传统的主动学习算法"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 传统的主动学习算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#序列型任务相比于分类任务的难点"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 序列型任务相比于分类任务的难点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#本文提出的模型"><span class="toc-number">1.2.</span> <span class="toc-text"> 本文提出的模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实验"><span class="toc-number">1.3.</span> <span class="toc-text"> 实验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据集"><span class="toc-number">1.3.1.</span> <span class="toc-text"> 数据集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#采用模型"><span class="toc-number">1.3.2.</span> <span class="toc-text"> 采用模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结果"><span class="toc-number">1.3.3.</span> <span class="toc-text"> 结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#references"><span class="toc-number">1.4.</span> <span class="toc-text"> References</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://i.loli.net/2019/04/27/5cc4218c74e0e.jpg"></div><div class="author-info__name text-center">yym6472</div><div class="author-info__description text-center"></div><div class="follow-button"><a href="https://github.com/yym6472">Follow Me on GitHub</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">5</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">6</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">4</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://molunerfinn.com/">MARKSZのBlog (Theme Auther's Blog)</a><a class="author-info-links__name text-center" href="https://pris-nlp.github.io/">BUPT PRIS Lab, NLP Group</a><a class="author-info-links__name text-center" href="https://helicqin.github.io/">Helicqin's Blog</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(https://i.loli.net/2019/04/27/5cc456373162f.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">yym6472's Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a><a class="site-page" href="/about">About</a><a class="site-page" href="/contact">Contact</a></span></div><div id="post-info"><div id="post-title">《Adversarial Active Learning for Sequence Labeling and Generation》阅读笔记</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-04-08</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/学习/">学习</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/学习/论文阅读笔记/">论文阅读笔记</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">2.2k</span><span class="post-meta__separator">|</span><span>Reading time: 6 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="adversarial-active-learning-for-sequence-labeling-and-generation阅读笔记"><a class="markdownIt-Anchor" href="#adversarial-active-learning-for-sequence-labeling-and-generation阅读笔记"></a> 《Adversarial Active Learning for Sequence Labeling and Generation》阅读笔记</h1>
+<p>本文主要是针对<strong>序列型任务</strong>（即输出为一个序列的任务，例如图片描述、机器翻译、序列标注等）提出了一种基于对抗的主动学习算法框架。</p>
+<h2 id="主动学习active-learning介绍"><a class="markdownIt-Anchor" href="#主动学习active-learning介绍"></a> 主动学习（active learning）介绍</h2>
+<p>主动学习（active learning）是一种解决<strong>监督学习中标记数据不足</strong>这一问题的方法。</p>
+<a id="more"></a>
+<p>在实际的监督学习任务中，往往会面临的情况就是：能够获取到大量的未标注数据，但是限于人力、物力，能做标注的数据量则十分有限（对于序列型任务更加棘手，因为序列型任务的标注往往还需要专业领域的知识，无法通过众包给大众的方式进行标注）。比如能够获取到10000条未标注数据，但可能只能标注其中的10%，1000条，这时如何选择这1000条就显得尤为关键，因为不同的标注数据带给模型的提升是不同的。原文中举了一个图片分类的例子：假设现在标注的数据池中包含了sports类别的各种图片（例如足球、篮球、羽毛球等），模型已经基于这些标注数据进行了训练。现在给定了两张未标注的图片，一张是关于swimming，另一张是关于a plate of food，作者认为选择后者进行标注、学习能够带给模型的提升更大，因为它相比前者为模型引入了更多的知识。</p>
+<p>所以主动学习想要解决的问题就是：在庞大的未标注的数据集中，如何选取有限量的数据进行标注（称为query sample selection），使得模型能够获得最优的性能。由于这些待标注的数据相当于是由模型“主动”选择出来，提出进行标注的，所以就被称为“主动学习”。</p>
+<h3 id="传统的主动学习算法"><a class="markdownIt-Anchor" href="#传统的主动学习算法"></a> 传统的主动学习算法</h3>
+<p>传统的主动学习方法一般都基于目前的分类器（模型），为unlabeled集合中的每一条unlabeled sample进行预测，然后对<strong>模型此次预测的不确定性</strong>作一个评价。得分最高（模型最不确定）的若干个sample就作为下一步需要标注的样本。</p>
+<p>从分类器中导出的<strong>不确定性评价</strong>有如下几种：</p>
+<ol>
+<li>
+<p>根据预测的置信度（confidence score）进行的评价<br>
+<img src="https://media-cdn.jiuzhang.com/markdown/images/4/8/11374d16-59a6-11e9-bd38-0242ac110002.jpg" alt="图片"><br>
+表示需要选出模型预测的置信度最低的若干条未标注样本进行标注。<br>
+<img src="https://media-cdn.jiuzhang.com/markdown/images/4/8/3511e728-59a6-11e9-bd38-0242ac110002.jpg" alt="图片"><br>
+公式(2)则采用了margin的形式，对于每一条未标注样本，选出最优和次优的两个预测序列，选择两者置信度的差值最相近（表示模型不确定是y1*还是y2*）的未标注样本进行标注。</p>
+</li>
+<li>
+<p>根据模型的熵（sequence entropy）进行的评价<br>
+<img src="https://media-cdn.jiuzhang.com/markdown/images/4/8/86ce03de-59a7-11e9-bd38-0242ac110002.jpg" alt="图片"><br>
+公式(3)枚举所有可行的序列（类别），使用模型对每个序列的评分算出一个熵值，作为不确定性的评价指标。<br>
+<img src="https://media-cdn.jiuzhang.com/markdown/images/4/8/6eb91da2-59a6-11e9-b2d0-0242ac110002.jpg" alt="图片"><br>
+公式(4)相比公式(3)则使用了分值最高的<code>N</code>个序列去计算熵值，而不是所有可行序列。</p>
+</li>
+</ol>
+<h3 id="序列型任务相比于分类任务的难点"><a class="markdownIt-Anchor" href="#序列型任务相比于分类任务的难点"></a> 序列型任务相比于分类任务的难点</h3>
+<ol>
+<li>冷启动问题：当开始标注的序列样本较少时，模型对于序列的预测可能很不准，那么基于这种不准的模型去导出预测的不确定性，从而去未标注的数据集中选择下一步要标注的样本，这个过程本身也会不准。</li>
+<li>预测序列的空间过于庞大，对于长度为<code>k</code>的预测序列，每个token可能有<code>p</code>种，那么总共的序列就有<code>p^k</code>种，基于上面说的传统的不确定性评价方法，其复杂度会基于序列长度<code>k</code>呈指数级别上升。因此很将传统的应用于分类任务的主动学习方法引入到序列任务中。</li>
+</ol>
+<h2 id="本文提出的模型"><a class="markdownIt-Anchor" href="#本文提出的模型"></a> 本文提出的模型</h2>
+<p><img src="https://media-cdn.jiuzhang.com/markdown/images/4/8/51aa42b2-59a7-11e9-b2d0-0242ac110002.jpg" alt="图片"></p>
+<p>本文提出了一个基于对抗的主动学习算法框架，结合encoder-decoder框架，去处理主动学习过程中的query sample selection的问题。</p>
+<p>模型的结构如上图所示，根据不同的功能相当于可以分成两条线：</p>
+<p>其一是针对于序列任务的encoder-decoder框架，encoder（图中的<code>M()</code>）负责对样本进行特征提取和编码，将其转换成一个中间向量<code>Z</code>，随后这个中间向量交由decoder（图中的<code>C()</code>）进行解码，形成预测的序列。这里的encoder和decoder可以整体视为一个黑箱，论文并不关心encoder/decoder具体采用怎样的模型。</p>
+<p>其二是为了解决主动学习中的query sample selection问题（也就是从未标注的样例集合中怎样选取下一步要标注的样例）。本文的模型是基于对抗的，就是图中特征编码器<code>M()</code>和分类器<code>D()</code>的对抗。分类器<code>D()</code>相当于需要做一个二分类任务，目标是判别出某个具体的样本采样自labeled pool还是unlabeled pool。而特征编码器<code>M()</code>除了要学习出样本的特征，获得更好的样本编码供decoder使用以外，还需要使得encoder能够迷惑分类器<code>D()</code>，使之无法判别出该样本采样自labeled pool还是unlabeled pool。</p>
+<p>训练时采用的损失函数如下：</p>
+<ol>
+<li><code>M()</code>的损失函数为：<br>
+<img src="https://media-cdn.jiuzhang.com/markdown/images/4/8/3cb3f6f6-59b0-11e9-bd38-0242ac110002.jpg" alt="图片"><br>
+其中的前两项表示和判别器<code>D()</code>对抗的损失（可理解为迷惑判别器<code>D()</code>所获得的奖励），而最后一项针对已标注的数据，预测序列与真实序列之间的损失，具体为：<br>
+<img src="https://media-cdn.jiuzhang.com/markdown/images/4/8/b38d0100-59b0-11e9-b2d0-0242ac110002.jpg" alt="图片"><br>
+其中的<code>L(·)</code>可以是任意的评价两个序列相似程度的损失函数</li>
+<li><code>D()</code>的损失函数为：<br>
+<img src="https://media-cdn.jiuzhang.com/markdown/images/4/8/09020162-59b1-11e9-bd38-0242ac110002.jpg" alt="图片"><br>
+即正确区分出样本labeled or unlabeled所获得的奖励。</li>
+</ol>
+<p>对抗的训练过程如下图所示：<br>
+<img src="https://media-cdn.jiuzhang.com/markdown/images/4/8/bf9602b8-59dc-11e9-8a3f-0242ac110002.jpg" alt="图片"></p>
+<p>当每一次的模型训练完毕后，一方面<code>M()</code>和<code>C()</code>能够相互配合，生成和真实序列相近的预测序列；另一方面，可以使用判别器<code>D()</code>去评价：未标注的样本集中的样本与当前模型的匹配程度。如果<code>D(M(x_unlabeled))</code>得分较高，则说明<code>D()</code>认为这条样本大概率来自labeled pool，也就可以认为这条样本与现有已标注样本集的覆盖程度较高；相反，如果<code>D(M(x_unlabeled))</code>得分较低，说明这条样本和已标注样本集的覆盖程度较低，其包含当前模型没有学到的知识的程度较大，因此适合选出来进行标注。</p>
+<h2 id="实验"><a class="markdownIt-Anchor" href="#实验"></a> 实验</h2>
+<p>本文提出的模型分别在两个序列任务：slot-filling和image-captioning上进行了实验，这里只介绍对第一个任务（slot-filling）的实验。</p>
+<h3 id="数据集"><a class="markdownIt-Anchor" href="#数据集"></a> 数据集</h3>
+<p>采用的是ATIS（预定机票）的数据集。</p>
+<h3 id="采用模型"><a class="markdownIt-Anchor" href="#采用模型"></a> 采用模型</h3>
+<ul>
+<li>编码器：采用了双向LSTM，64个隐层结点。word-embedding维度为128。最后得到的中间表示向量的维度为128（2 * 64）维。</li>
+<li>解码器：本文分别尝试了两种解码器：1. 标准的LSTM解码器；2. 加了attention机制的LSTM解码器。</li>
+<li>判别器<code>D()</code>：三层全连接：128 - 64 - 1，输入和中间层使用relu作为激活函数，输出层会过一个sigmoid函数，得到0-1之间的得分，表示属于labeled pool的概率。</li>
+</ul>
+<h3 id="结果"><a class="markdownIt-Anchor" href="#结果"></a> 结果</h3>
+<p>训练时每次选取数据中的10%进行训练（视为由主动学习框架选出的下一步要标注的数据），最后得出模型效果随标注数据百分比的变化情况如下：<br>
+<img src="https://media-cdn.jiuzhang.com/markdown/images/4/8/d8b6ae4a-59b5-11e9-bd38-0242ac110002.jpg" alt="图片"><br>
+其中两张图分别对应上面提到的使用的两个解码器（上图为标准LSTM，下图为加了attention机制）。</p>
+<p>每张图中的不同颜色的折线表示对不同的主动学习方法之间的比较：Random表示随机从未标注数据集中选取10%的数据进行标注；LC/NSE分别为上文提到过对于query sample selection的几种传统的不确定性评价方法；ALISE则是本文提出的这个方法；而ALISE+NSE表示本文提出的方法和NSE方法的综合评价。</p>
+<p>可以看到，在标注的数据量占全部数据百分比一定时，ALISE方法所获得的模型效果基本上领先于其他的主动学习评价方法。而综合ALISE和NSE的评价方法则更为优秀。</p>
+<h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
+<ul>
+<li><a href="https://www.ijcai.org/proceedings/2018/0558.pdf" target="_blank" rel="noopener">Yue Deng, DaWai Chen, Yilin Shen, and HongxiaJin. Adversarial Active Learning for Sequence Labeling and Generation. IJCAI-18, In Proceedings of the Twenty-Seventh International Joint Conference on Artiﬁcial Intelligence, 2018</a></li>
+</ul>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">yym6472</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://yym6472.github.io/2019/04/08/《Adversarial-Active-Learning-for-Sequence-Labeling-and-Generation》阅读笔记/">https://yym6472.github.io/2019/04/08/《Adversarial-Active-Learning-for-Sequence-Labeling-and-Generation》阅读笔记/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/NLP/">NLP</a><a class="post-meta__tags" href="/tags/Active-Learning/">Active Learning</a><a class="post-meta__tags" href="/tags/Adversarial-based/">Adversarial-based</a></div><div class="social-share"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/04/20/NLP领域的对抗式方法综述/"><i class="fa fa-chevron-left">  </i><span>NLP领域的对抗式方法综述</span></a></div><div class="next-post pull-right"><a href="/2019/04/04/Docker介绍/"><span>Docker介绍</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '1470654ab571587d5962',
+  clientSecret: 'dd25cc8b92dbedf931e5a5e29b75f6bdbcff11ed',
+  repo: 'yym6472.github.io',
+  owner: 'yym6472',
+  admin: 'yym6472',
+  id: md5(decodeURI(location.pathname)),
+  language: 'en'
+})
+gitalk.render('gitalk-container')</script></div></div><footer class="footer-bg" style="background-image: url(https://i.loli.net/2019/04/27/5cc456373162f.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2019 By yym6472</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/algolia.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="algolia-search"><div class="search-dialog__title" id="algolia-search-title">Algolia</div><div id="algolia-input-panel"><div id="algolia-search-input"></div></div><hr><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-stats"></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

@@ -11,12 +11,11 @@
 <p>Paper link: <a href="www.aclweb.org/anthology/D19-1390.pdf">[PDF]</a></p>
 <h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2>
 <p>本文意图解决的是文本摘要任务。指针生成网络目前已经成为了目前的文本摘要模型的标准。然而指针生成网络往往受限于以下两个问题：</p>
-<a id="more"></a>
 <ul>
 <li>首先，指针只能复制精确的单词，而忽略了可能的变形或抽象，这限制了它捕获更丰富的潜在对齐的能力；</li>
 <li>其次，复制机制授予了模型强烈的复制导向，使得大多数的句子都是通过简单复制源文本产生的。</li>
 </ul>
-<p>本文提出了一种模型，使得指针网络<strong>能够“编辑”其复制的词语</strong>，而不是简单地硬拷贝，来尝试解决上述问题。下图给出了一个启发性的例子，可以看到，黄金摘要中的每个词语都能近似地找出原文（Source）中的意思相近的词语（标红的词语），但是并不是完全复制，而是有一些略微的修改，例如：closure -&gt; closes、campaign -&gt; war、escalated -&gt; escalates。</p>
+<p>本文提出了一种模型，使得指针网络<strong>能够“编辑”其复制的词语</strong>，而不是简单地硬拷贝，来尝试解决上述问题。<a id="more"></a>下图给出了一个启发性的例子，可以看到，黄金摘要中的每个词语都能近似地找出原文（Source）中的意思相近的词语（标红的词语），但是并不是完全复制，而是有一些略微的修改，例如：closure -&gt; closes、campaign -&gt; war、escalated -&gt; escalates。</p>
 <p><img src="https://raw.githubusercontent.com/yym6472/ImagesForPicGo/master/20200117152841.png" alt="摘要与原文的潜在对齐"></p>
 <p>在标准的指针生成网络中，这些改变了词性的衍生词或近义词不会被包含在复制模式中进行训练，但它们确实与原文中的某个词具有词义上的相关性（即软对齐），作者认为这限制了摘要的生成效果，尤其是在摘要概括度很高的数据集中。</p>
 <p>本文提出了泛指针生成网络（Generalized Pointer Generator，GPG），将指针生成部分的“硬拷贝”替换为“软编辑”。如上图，模型在生成closes的时候，先指向原文中的closure一词，然后通过一个关系建模函数将closure转换为closes进行生成。</p>
